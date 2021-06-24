@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // 各个语言格式 处理 timeFormat
+        var timeFormatObj = {
+            en: 'aa dd, yyyy HH:mm',
+            vn: 'dd/MM/yyyy HH:mm',
+            id: 'dd/MM/yyyy, HH:mm',
+            zh: 'yyyy-MM-dd HH:mm',
+            th: 'dd aa yyyy HH:mm'
+        }
+
+        // 时间格式处理
+        Date.prototype.Format = function (fmt, lang) {
+
+            var month, o, k, timeZone, timeZoneValue, zone, finalTimeZone, originFmt;
+            originFmt = fmt; // 作为判断条件处理差异性
+
+            // 月份处理'aa'，特殊处理  英文， 泰语
+            if (lang == 'en') {
+                switch (this.getMonth() + 1) {
+                    case 1:
+                        month = "Jan";
+                        break;
+                    case 2:
+                        month = "Feb";
+                        break;
+                    case 3:
+                        month = "Mar";
+                        break;
+                    case 4:
+                        month = "Apr";
+                        break;
+                    case 5:
+                        month = "May";
+                        break;
+                    case 6:
+                        month = "Jun";
+                        break;
+                    case 7:
+                        month = "Jul";
+                        break;
+                    case 8:
+                        month = "Aug";
+                        break;
+                    case 9:
+                        month = "Sep";
+                        break;
+                    case 10:
+                        month = "Oct";
+                        break;
+                    case 11:
+                        month = "Nov";
+                        break;
+                    case 12:
+                        month = "Dec"
+                }
+            } else if (lang == 'th') {
+                switch (this.getMonth() + 1) {
+                    case 1:
+                        month = "ม.ค.";
+                        break;
+                    case 2:
+                        month = "ก.พ.";
+                        break;
+                    case 3:
+                        month = "มี.ค.";
+                        break;
+                    case 4:
+                        month = "เม.ย.";
+                        break;
+                    case 5:
+                        month = "พ.ค.";
+                        break;
+                    case 6:
+                        month = "มิ.ย.";
+                        break;
+                    case 7:
+                        month = "ก.ค.";
+                        break;
+                    case 8:
+                        month = "ส.ค.";
+                        break;
+                    case 9:
+                        month = "ก.ย.";
+                        break;
+                    case 10:
+                        month = "ต.ค.";
+                        break;
+                    case 11:
+                        month = "พ.ย.";
+                        break;
+                    case 12:
+                        month = "ธ.ค."
+                }
+            }
+
+            o = fmt.indexOf('aa') >=0 ? {
+                'd+': this.getDate(), // 日
+                'H+': this.getHours(), // 小时
+                'm+': this.getMinutes(), // 分钟
+                's+': this.getSeconds() // 秒 
+            }: {
+                'M+': this.getMonth() + 1, // 月份
+                'd+': this.getDate(), // 日
+                'H+': this.getHours(), // 小时
+                'm+': this.getMinutes(), // 分钟
+                's+': this.getSeconds() // 秒
+            };
+
+            if (lang == "th") { // 泰语年份处理
+                // 泰国使用佛历，公历 + 543
+                if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + 543 + "").substr(4 - RegExp.$1.length));
+            } else {
+                if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+            }
+
+            if (/(a+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (month + "").substr(2 - RegExp.$1.length));
+
+            for (var k in o) {
+                if (new RegExp("(" + k + ")").test(fmt)) {
+                    fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+                } 
+            }
+
+            // 多语言后缀处理
+            if (lang == 'id' && originFmt.indexOf('HH:mm') >= 0) {
+                timeZone = Math.abs(this.getTimezoneOffset() / 60);
+                if (timeZone == 7) {
+                    fmt += ' WIB';
+                } else if (timeZone == 8) {
+                    fmt += ' WITA';
+                } else if (timeZone == 9) {
+                    fmt += ' WIT';
+                }
+            } else if (lang == 'th' && originFmt.indexOf('HH:mm') >= 0) {
+                fmt += ' น';
+            }
+
+            // GMT相关调整
+            // timeZone = this.getTimezoneOffset() / 60,
+            // timeZoneValue = Math.abs(timeZone),
+            // zone = timeZoneValue < 10 ? "0" + timeZoneValue : timeZoneValue;
+            // finalTimeZone = timeZone < 0 ? " GMT+" + zone + ":00" : " GMT-" + zone + ":00";
+            // fmt += finalTimeZone;
+            return fmt
+        }
+
+        console.log(new Date().Format(timeFormatObj['en'], 'en'));
+
+    </script>
+</body>
+</html>
