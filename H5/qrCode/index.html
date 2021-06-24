@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- 禁止拖拽拉伸 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no,">
+    <title>测试H5页面二维码分享</title>
+    <style>
+        /* 海报部分 */
+        html {
+        overflow-x: auto;
+        overflow-y: scroll;
+    }
+
+    body,
+    dl,
+    dt,
+    dd,
+    ul,
+    ol,
+    li,
+    pre,
+    form,
+    fieldset,
+    input,
+    p,
+    blockquote,
+    th,
+    td {
+        font-weight: 400;
+        margin: 0;
+        padding: 0;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h4,
+    h5 {
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        background-color: #FFFFFF;
+        color: #333333;
+        font-family: Helvetica, Arial, sans-serif;
+        font-size: 0.14rem;
+        text-align: left;
+    }
+
+    select {
+        font-size: 12px;
+    }
+
+    table {
+        border-collapse: collapse;
+    }
+
+    fieldset,
+    img {
+        border: 0 none;
+    }
+
+    fieldset {
+        margin: 0;
+        padding: 0;
+    }
+
+    fieldset p {
+        margin: 0;
+        padding: 0 0 0 8px;
+    }
+
+    legend {
+        display: none;
+    }
+
+    address,
+    caption,
+    em,
+    strong,
+    th,
+    i {
+        font-style: normal;
+        font-weight: 400;
+    }
+
+    table caption {
+        margin-left: -1px;
+    }
+
+    hr {
+        border-bottom: 1px solid #FFFFFF;
+        border-top: 1px solid #E4E4E4;
+        border-width: 1px;
+        clear: both;
+        height: 2px;
+        margin: 5px 0;
+        overflow: hidden;
+    }
+
+    ol,
+    ul {
+        list-style-image: none;
+        list-style-position: outside;
+        list-style-type: none;
+    }
+
+    caption,
+    th {
+        text-align: left;
+    }
+
+    q:before,
+    q:after,
+    blockquote:before,
+    blockquote:after {
+        content: "";
+    }
+
+    a {
+        text-decoration: none;
+        color: inherit
+    }
+
+    .app {
+        width: 100%;
+        height: auto;
+    }
+    #poster-modal {
+        width: 91.2%;
+        height: 5.55rem;
+        position: absolute;
+        top: calc(50% - 2.775rem);
+        left: 4.5%;
+        right: 4.5%;
+        z-index: 1027;
+        box-sizing: border-box;
+        border-radius: 2px;
+    }
+    #poster-modal .poster-close {
+        position: absolute;
+        top: 0.1rem;
+        right: 0.1rem;
+        width: 0.2rem; 
+        height: 0.2rem;
+        background: url('images/close-icon.png') no-repeat;
+        background-size: 100% 100%;
+        z-index: 100;
+    }
+    #poster-modal .poster-box {
+        width: 3.42rem;
+        height: 4.92rem;
+        box-sizing: border-box;
+    }
+    #poster-modal .poster-box > img {
+        display: block;
+        width: 3.42rem;
+        height: 4.92rem;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+    #poster-modal .poster-box > div {
+        padding: 0.2rem 0.28rem 0.1rem;
+        position: relative;
+        z-index: 99;
+        text-align: center;
+        /* background: url(images/poster-img_zh-CN.jpg) no-repeat;
+        background-size: 100% 100%; */
+    }
+    #poster-modal .poster-box h3 {
+        font-size: 0.14rem;
+        font-weight: 500;
+        color: #FFFFFF;
+        line-height: 0.18rem;
+        text-align: center;
+        text-shadow: 0px 1px 3px rgba(55, 74, 117, 0.3);
+    }
+    #poster-modal .poster-box p:nth-of-type(1) {
+        font-size: 0.12rem;
+        font-weight: 400;
+        color: #FFFFFF;
+        line-height: 0.17rem;
+        margin-top: 0.14rem;
+        text-align: left;
+    }
+    #poster-modal .poster-box p:nth-of-type(1) span {
+        color: rgba(255, 188, 60, 1);
+        font-size: 0.12rem;
+        font-weight: 400;
+    }
+    #poster-modal .poster-box .empty-box {
+        height: 2.17rem;
+    }
+    #poster-modal .poster-box .qrCode-box {
+        height: 1.06rem;
+        margin: 0 auto; 
+        padding-left: 0.12rem;
+        background: #ffffff;
+        box-shadow: 0px 3px 3px 0px rgba(132, 138, 148, 0.2);
+        border-radius: 2px;
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        align-items: center;
+        position: relative;
+    }
+    #poster-modal .poster-box .qrCode-box .qrBox-left {
+        width: 1.8rem;
+        height: auto;
+        padding-right: 0.15rem;
+    }
+    #poster-modal .poster-box .qrCode-box .qrBox-left p:nth-of-type(1) {
+        font-size: 0.1rem;
+        font-weight: bold;
+        color: #3A3E45;
+        padding-right: 0.1rem;
+        margin-top: 0;
+        line-height: 0.14rem;
+    }
+    #poster-modal .poster-box .qrCode-box .qrBox-left p:nth-of-type(2) {
+        font-size: 0.1rem;
+        font-weight: 400;
+        color: #5B6270;
+        line-height: 0.18rem;
+        text-align: left;
+        margin-top: 0.12rem;
+    }
+    #poster-modal .poster-box .qrCode-box .qrBox-left p:nth-of-type(2) img {
+        display: inline-block;
+        width: 0.08rem;
+        height: 0.09rem;
+        margin-left: 0.03rem;
+        vertical-align: middle;
+    }
+    #poster-modal .poster-box .qrCode-box #qrCode {
+        width: 84px;
+        height: 84px;
+        position: absolute;
+        right: 0.12rem;
+        top: calc(50% - 42px);
+    }
+    #poster-modal .poster-box p:nth-of-type(2) {
+        font-size: 0.08rem;
+        text-align: center;
+        margin-top: 0.03rem;
+        margin-bottom: 0.05rem;
+        font-weight: 300;
+        line-height: normal;
+        color: #D3EEFF;
+    }
+    #poster-modal .poster-box .logo-box {
+        display: inline-block;
+    }
+    #poster-modal .poster-box ul {
+        display: flex;
+    }
+    #poster-modal .poster-box ul li {
+        height: auto;
+        text-align: center;
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+    #poster-modal .poster-box ul li:nth-of-type(1) {
+        width: 0.69rem;
+    }
+    #poster-modal .poster-box ul li:nth-of-type(2) {
+        width: auto;
+        padding-left: 0.21rem;
+    }
+    #poster-modal .poster-box ul li:nth-of-type(1) img {
+        display: block;
+        width: 0.69rem;
+        height: 0.13rem;
+    }
+    #poster-modal .poster-box ul li:nth-of-type(1) i {
+        display: block;
+        content: '';
+        background: #ffffff;
+        position: absolute;
+        width: 0.01rem;
+        height: 0.1rem;
+        top: 0.02rem;
+        right: -0.11rem;
+    }
+    #poster-modal .poster-box ul li:nth-of-type(2) span{
+        font-size: 0.1rem;
+        font-weight: 400;
+        color: #FFFFFF;
+        box-sizing: border-box;
+    }
+    #poster-modal .save-poster-btn {
+        height: 0.4rem;
+        line-height: 0.4rem;
+        background: #FFFFFF;
+        box-shadow: 0px 3px 3px 0px rgba(132, 138, 148, 0.2);
+        border-radius: 2px;
+        font-size: 0.14rem;
+        font-weight: bold;
+        color: #0078FF;
+        text-align: center;
+        margin-top: 0.23rem;
+    }
+    /* 模态框 */
+    #fullbg {
+        display: none;
+        background: #000000;
+        opacity: 0.4;
+        position: fixed;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        user-select: none;
+        z-index: 1026;
+    }
+    #btn-action {
+        margin: 0rem;
+        padding: 0.1rem;
+        background: #005ce3;
+        color: #fff;
+        font-size: 0.14rem;
+        font-weight: 600;
+        border-color: unset;
+        border-style: none;
+    }
+</style>
+</head>
+<body>
+    <div class="app container-fluid other-language">
+        <button id="btn-action">显示二维码海报</button>
+        <!-- 模态框 -->
+		<div id="fullbg"></div>
+        <div id="poster-modal" style="display: none;">
+            <div class="poster-close"></div>
+            <div class="poster-box">
+                <img src="images/poster-img_zh-CN.jpg" alt="">
+                <div>
+                    <h3 class="invite-poster-title">XXX 邀请您加入 XXXXX </h3>
+                    <p class="invite-poster-desc">选择 XXXXX 平台交易<span>股票、外汇、商品</span>和<span>指数</span>等热门金融衍生品。享受零佣金、极具优势的低价差、高达200倍的杠杆以及快速可靠的订单执行。</p>
+                    <div class="empty-box"></div>
+                    <div class="qrCode-box">
+                        <div class="qrBox-left">
+                            <p class="invite-poster-desc-qrcode">现在通过邀请二维码加入 XXXXX，可获最高 <span>5000*</span> 的交易回馈哦！</p>
+                            <p>扫码加入<img src="images/triangle-icon.png" alt=""></p>
+                        </div>
+                        <div id="qrCode"></div>
+                    </div>
+                    <p>交易有风险。活动由 XXXXX 提供<br>（*受条款及条件约束）</p>
+                    <div class="logo-box">
+                        <ul>
+                            <li><img src="images/logo.png" alt=""><i></i></li>
+                            <li><span>让交易更简便</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="save-poster-btn">
+				保存至相册，分享给好友
+			</div>
+        </div>
+
+    </div>
+    <script src="js/jquery.js"></script> 
+    <script src="js/clipboard.min.js"></script>
+    <script src="js/jquery.qrcode.min.js"></script>
+    <script src="js/html2canvas.js"></script>
+    <script src="js/vconsole.min.js"></script>
+    <script>
+
+        // PC端开发移动端，可修改浏览器默认字体大小，以达到移动端效果
+	    // 1rem = 100px;
+	    document.documentElement.style.fontSize = document.documentElement.clientWidth / 3.75 + 'px';
+        $("#btn-action").click(function() {
+            $("#fullbg").show();
+			$("#poster-modal").show();
+            $("#btn-action").hide();
+        });
+
+        // 生成二维码，width，height为生成二维码图片的大小，text为生成二维码的相关链接，如果链接较长，二维码宽高较小，则会导致生成的二维码无法扫描，原因是因为二维码太过复杂，无法扫描
+        $('#qrCode').qrcode({
+			render:"canvas",//设置渲染方式 （有两种方式 table和canvas，默认是canvas）  
+			width: 84,//宽度
+			height: 84,//高度
+			correctLevel:0,//纠错等级  
+			text: "https://www.google.com",//生成二维码的文本
+		});
+
+        // 保存海报二维码
+		$(".save-poster-btn").on("click", function (event) {
+
+			var width = $(".poster-box").width();//dom宽
+			var height = $(".poster-box").height();//dom高
+			var scaleBy = DPR(); //放大倍数
+			var canvas = document.createElement('canvas');
+
+            canvas.width = width * scaleBy;//canvas宽度
+			canvas.height = height * scaleBy;//canvas高度
+
+			// 调整图片清晰度
+			var context = canvas.getContext("2d");
+			context.scale(scaleBy,scaleBy);
+
+			// 修改偏移量 -- 重要
+			var rect = $(".poster-box").offset();//获取元素相对于视察的偏移量
+			context.translate(-rect.left, -rect.top);//设置context位置，值为相对于视窗的偏移量负值，让图片复位
+				
+			html2canvas($(".poster-box"), { // 此处根据不同场景需要参照html2canvas官方网站进行参数配置
+				dpi: scaleBy,
+				scale: scaleBy,
+				canvas: canvas,
+				width: width,
+				heigth: height,
+				backgroundColor: 'transparent',
+				allowTaint: true //允许画布上有跨域图片
+			}).then(function (canvas) {
+
+				var dataUrl = canvas.toDataURL();
+				var alink = document.createElement("a"); 
+				alink.href = dataUrl; 
+				alink.id = "mitrade-qrCode-download";
+				alink.download = "qrPoster.png";  
+				alink.click(); 
+			});
+		});
+
+        // 关闭二维码海报
+		$("#poster-modal .poster-close").click(function () {
+			$("#fullbg").hide();
+			$("#poster-modal").hide();
+            $("#btn-action").show();
+		});
+        function DPR(){ // 获取设备dpi
+
+            if (window.devicePixelRatio && window.devicePixelRatio > 1) {
+                return window.devicePixelRatio;
+            }
+            return 1;
+        }
+    </script>
+    <!-- 移动端测试 -->
+	<script>
+        // 调试部分代码
+		var vConsole = new VConsole();
+		console.log('Hello world');
+	</script>
+</body>
+</html>
