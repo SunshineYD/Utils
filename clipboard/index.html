@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- 禁止拖拽拉伸 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no,">
+    <title>复制到剪切板</title>
+    <link rel="stylesheet" href="../static/common.css">
+    <style>
+        .container,
+        .container2 {
+            margin: 0.2rem;
+        }
+        .copy-dom,
+        .copy-dom2 {
+            font-size: 0.16rem;
+            font-weight: 500;
+        }
+        .clipboard-btn,
+        .clipboard-btn2 {
+            display: block;
+            text-align: center;
+            width: 1rem;
+            height: 0.32rem;
+            line-height: 0.32rem;
+            font-size: 0.14rem;
+            font-weight: 500;
+            border-radius: 0.05rem;
+            text-decoration: none;
+            margin-top: 0.1rem;
+            background: #0089ff;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="copy-dom">测试原生JS复制到粘贴板</div>
+        <a class="clipboard-btn">点击复制</a>
+    </div>
+    <div class="container2">
+        <div class="copy-dom2">测试clipboard.js复制到粘贴板</div>
+        <a class="clipboard-btn2">点击复制</a>
+    </div>
+    <script src="../static/js/jquery.js"></script> 
+    <script src="clipboard.min.js"></script> 
+    <script>
+
+        /**
+         * 原生js复制内容到粘贴板
+         * content : 需要复制的内容
+         * message : 复制完后的提示，不传则默认提示"复制成功"
+         */
+        $(".clipboard-btn").click(function() {
+            var domText = $('.copy-dom').html();
+            copyToClip(domText);
+        })
+
+        function copyToClip(content, message) {
+            var aux = document.createElement("input"); 
+            aux.readOnly = 'readonly'; // 移动端禁止软键盘弹出
+            aux.setAttribute("value", content); 
+            document.body.appendChild(aux); 
+            aux.select();
+            document.execCommand("copy"); 
+            document.body.removeChild(aux);
+            if (message == null) {
+                alert("复制成功");
+            } else{
+                alert(message);
+            }
+        }
+
+        /**
+         * clipboard.js复制内容到粘贴板
+         * .clipboard-btn2 点击进行复制操作的DOM元素
+         * text 可动态设置text，需要返回一个字符串
+         * **/
+        var clipboard = new ClipboardJS('.clipboard-btn2', {
+            text: function() {
+                return $(".copy-dom2").html(); // 复制的内容部分，function部分可做对应调整
+            }
+        });
+
+        clipboard.on('success', function(e) {
+            alert("复制成功");
+            e.clearSelection();
+        });
+
+        // PC端开发移动端，可修改浏览器默认字体大小，以达到移动端效果
+	    // 1rem = 100px;
+	    document.documentElement.style.fontSize = document.documentElement.clientWidth / 3.75 + 'px';
+    </script>
+</body>
+</html>
