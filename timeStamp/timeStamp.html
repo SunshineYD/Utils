@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>时间格式处理及文字溢出处理显示...</title>
+    <style>
+        /* 文字溢出处理 */
+        h3 {
+            font-size: 30px;
+            font-weight: bold;
+            margin: 0 0 10px;
+            padding: 0;
+            line-height: 40px;
+        }
+        p  {
+            font-size: 20px;
+            font-weight: 300;
+            margin: 0;
+            padding: 0;
+            line-height: 32px;
+        }
+        div {
+            width: 50%;
+            height: auto;
+            margin: 0 auto;
+            padding: 20px 10px;
+        }
+        /* 此种方法只在内核为 webkit 的浏览器中生效 */
+        .ellipsis { 
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+        }
+    </style>
+</head>
+<body>
+    <div style="margin-bottom: 20px;background: #F5F5F5;">
+        <h3>时间格式转换</h3>
+        <p id="timeStamp"></p>
+    </div>
+    <div class='text-box'>
+        <h3>文字溢出处理</h3>
+        <p class='ellipsis'>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi alias adipisci, magnam itaque ipsam neque incidunt ex eaque illo consequuntur iusto distinctio doloremque nesciunt voluptatibus pariatur placeat omnis in ipsum?
+            Commodi libero culpa veritatis debitis numquam corrupti quibusdam maxime! Ullam similique tempora ducimus dolores molestias omnis eos cumque itaque atque dolorum quibusdam, modi, beatae quia. Fuga facilis suscipit odio deleniti!
+            Labore obcaecati quisquam perspiciatis. Ullam a doloribus assumenda velit magni, doloremque nisi incidunt impedit consequatur. Sed nisi ut hic vel dolorem nobis aperiam molestias officiis quae? Ipsum odio magnam ad.
+        </p>
+    </div>
+    <div class='text-box'>
+        <h3>文字溢出处理插件</h3>
+        <p id='ellipsis'>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi alias adipisci, magnam itaque ipsam neque incidunt ex eaque illo consequuntur iusto distinctio doloremque nesciunt voluptatibus pariatur placeat omnis in ipsum?
+            Commodi libero culpa veritatis debitis numquam corrupti quibusdam maxime! Ullam similique tempora ducimus dolores molestias omnis eos cumque itaque atque dolorum quibusdam, modi, beatae quia. Fuga facilis suscipit odio deleniti!
+            Labore obcaecati quisquam perspiciatis. Ullam a doloribus assumenda velit magni, doloremque nisi incidunt impedit consequatur. Sed nisi ut hic vel dolorem nobis aperiam molestias officiis quae? Ipsum odio magnam ad.
+        </p>
+    </div>
+    <script src='../jquery-3.6.0.min.js'></script>
+    <script src='./clamp.js'></script>
+    <script>
+
+        // 文字溢出处理，使用'...'代替显示 -- clamp插件
+        var module = document.getElementById("ellipsis");
+        $clamp(module, {clamp: 3});
+
+        // 各个语言格式 处理 timeFormat
+        $(function() {
+            var timeFormatObj = {
+                en: 'aa dd, yyyy HH:mm',
+                vn: 'dd/MM/yyyy HH:mm',
+                id: 'dd/MM/yyyy, HH:mm',
+                zh: 'yyyy-MM-dd HH:mm',
+                th: 'dd aa yyyy HH:mm'
+            }
+            // 时间格式处理
+            Date.prototype.Format = function (fmt, lang) {
+
+                var month, o, k, timeZone, timeZoneValue, zone, finalTimeZone, originFmt;
+                originFmt = fmt; // 作为判断条件处理差异性
+
+                // 月份处理'aa'，特殊处理  英文， 泰语
+                if (lang == 'en') {
+                    switch (this.getMonth() + 1) {
+                        case 1:
+                            month = "Jan";
+                            break;
+                        case 2:
+                            month = "Feb";
+                            break;
+                        case 3:
+                            month = "Mar";
+                            break;
+                        case 4:
+                            month = "Apr";
+                            break;
+                        case 5:
+                            month = "May";
+                            break;
+                        case 6:
+                            month = "Jun";
+                            break;
+                        case 7:
+                            month = "Jul";
+                            break;
+                        case 8:
+                            month = "Aug";
+                            break;
+                        case 9:
+                            month = "Sep";
+                            break;
+                        case 10:
+                            month = "Oct";
+                            break;
+                        case 11:
+                            month = "Nov";
+                            break;
+                        case 12:
+                            month = "Dec"
+                    }
+                } else if (lang == 'th') {
+                    switch (this.getMonth() + 1) {
+                        case 1:
+                            month = "ม.ค.";
+                            break;
+                        case 2:
+                            month = "ก.พ.";
+                            break;
+                        case 3:
+                            month = "มี.ค.";
+                            break;
+                        case 4:
+                            month = "เม.ย.";
+                            break;
+                        case 5:
+                            month = "พ.ค.";
+                            break;
+                        case 6:
+                            month = "มิ.ย.";
+                            break;
+                        case 7:
+                            month = "ก.ค.";
+                            break;
+                        case 8:
+                            month = "ส.ค.";
+                            break;
+                        case 9:
+                            month = "ก.ย.";
+                            break;
+                        case 10:
+                            month = "ต.ค.";
+                            break;
+                        case 11:
+                            month = "พ.ย.";
+                            break;
+                        case 12:
+                            month = "ธ.ค."
+                    }
+                }
+
+                o = fmt.indexOf('aa') >=0 ? {
+                    'd+': this.getDate(), // 日
+                    'H+': this.getHours(), // 小时
+                    'm+': this.getMinutes(), // 分钟
+                    's+': this.getSeconds() // 秒 
+                }: {
+                    'M+': this.getMonth() + 1, // 月份
+                    'd+': this.getDate(), // 日
+                    'H+': this.getHours(), // 小时
+                    'm+': this.getMinutes(), // 分钟
+                    's+': this.getSeconds() // 秒
+                };
+
+                if (lang == "th") { // 泰语年份处理
+                    // 泰国使用佛历，公历 + 543
+                    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + 543 + "").substr(4 - RegExp.$1.length));
+                } else {
+                    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+                }
+
+                if (/(a+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (month + "").substr(2 - RegExp.$1.length));
+
+                for (var k in o) {
+                    if (new RegExp("(" + k + ")").test(fmt)) {
+                        fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+                    } 
+                }
+
+                // 多语言后缀处理
+                if (lang == 'id' && originFmt.indexOf('HH:mm') >= 0) {
+                    timeZone = Math.abs(this.getTimezoneOffset() / 60);
+                    if (timeZone == 7) {
+                        fmt += ' WIB';
+                    } else if (timeZone == 8) {
+                        fmt += ' WITA';
+                    } else if (timeZone == 9) {
+                        fmt += ' WIT';
+                    }
+                } else if (lang == 'th' && originFmt.indexOf('HH:mm') >= 0) {
+                    fmt += ' น';
+                }
+
+                // GMT相关调整
+                // timeZone = this.getTimezoneOffset() / 60,
+                // timeZoneValue = Math.abs(timeZone),
+                // zone = timeZoneValue < 10 ? "0" + timeZoneValue : timeZoneValue;
+                // finalTimeZone = timeZone < 0 ? " GMT+" + zone + ":00" : " GMT-" + zone + ":00";
+                // fmt += finalTimeZone;
+                return fmt
+            }
+            document.getElementById('timeStamp').innerHTML = new Date().Format(timeFormatObj['en'], 'en');
+            console.log(new Date().Format(timeFormatObj['en'], 'en'));
+        })
+    </script>
+</body>
+</html>

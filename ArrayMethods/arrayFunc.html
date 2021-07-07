@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数组相关方法</title>
+    <style>
+        /* 文字溢出处理 */
+        h3 {
+            font-size: 26px;
+            font-weight: bold;
+            margin: 0 0 10px;
+            padding: 0;
+            line-height: 36px;
+        }
+        p  {
+            font-size: 16px;
+            font-weight: 300;
+            margin: 0;
+            padding: 0;
+            line-height: 24px;
+        }
+        div {
+            width: 50%;
+            height: auto;
+            margin: 0 auto;
+            padding: 20px 10px;
+        }
+    </style>
+</head>
+<body>
+    <div style="background: #F5F5F5;">
+        <h3>includes方法去重 -- es6 方法</h3>
+        <p class="includes"></p>
+    </div>
+    <div style="background: #F5F5F5;">
+        <h3>includes + filter 方法去重 -- es6 方法</h3>
+        <p class="includesFilter"></p>
+    </div>
+    <div style="background: #F5F5F5;">
+        <h3>Set 方法去重 -- es6 方法 -- 简单的数组去重</h3>
+        <p class="SetFunc"></p>
+    </div>
+    <script src='../jquery-3.6.0.min.js'></script>
+    <script>
+        // 1、includes 方法 支持es6的浏览器
+        function unique(arr) {
+
+            var newArr = [];
+            for (var i = 0; i< arr.length; i++) {
+                if (!newArr.includes(arr[i])){
+                    newArr.push(arr[i]);
+                }
+            }
+            return newArr;
+        }
+        $('.includes').html(unique([1,2,11,3,4,5,6,10,3,4,5]).sort((a,b)=>{return a - b;}).join(' '));
+
+        // 2、filter + includes 方法数组去重，支持ES6的浏览器
+        function unique2(arr) {
+            var newArr = [];
+            newArr = arr.filter(function(item){
+
+                return newArr.includes(item) ? '' : newArr.push(item);
+            })
+            return newArr;
+        }
+        $('.includesFilter').html(unique2([1,11,2,3,45,2,4,5,4,3]).sort((a,b)=>{return a - b;}).join(' '));
+
+        // 3、Set 方法数组去重
+        function unique3(arr) {
+            return Array.from(new Set(arr));
+        }
+
+        $('.SetFunc').html(unique3([1,11,2,3,45,2,4,5,4,3]).sort((a,b)=>{return a - b;}).join(' '));
+    </script>
+</body>
+</html>
