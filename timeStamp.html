@@ -7,6 +7,8 @@
     <title>Document</title>
 </head>
 <body>
+    <p>时间格式转换</p>
+    <p id="timeStamp"></p>
     <script>
         // 各个语言格式 处理 timeFormat
         var timeFormatObj = {
@@ -153,6 +155,7 @@
             return fmt
         }
 
+        document.getElementById('timeStamp').innerHTML = new Date().Format(timeFormatObj['en'], 'en');
         console.log(new Date().Format(timeFormatObj['en'], 'en'));
 
     </script>
